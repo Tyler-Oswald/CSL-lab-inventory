@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab Inventory</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 700px; margin: 40px auto; padding: 0 20px; color: #222; }
+  h1 { margin-bottom: 4px; }
+  p.note { color: #777; font-size: 0.9rem; margin-top: 0; }
+  table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #ddd; }
+  th { font-size: 0.8rem; color: #777; text-transform: uppercase; letter-spacing: 0.03em; }
+  tr:hover { background: #f7f7f7; }
+</style>
+</head>
+<body>
+
+<h1>Lab Inventory</h1>
+<p class="note" id="status">Loading…</p>
+
+<table>
+  <thead>
+    <tr><th>Item</th><th>Quantity</th><th>Notes</th></tr>
+  </thead>
+  <tbody id="rows"></tbody>
+</table>
+
+<script>
+  // Reads inventory.csv, columns: item, quantity, notes
+  function parseCSV(text) {
+    const lines = text.trim().split(/\r?\n/);
+    const rows = [];
+    for (let i = 1; i < lines.length; i++) { // skip header
+      if (!lines[i].trim()) continue;
+      const cells = [];
+      let cur = '', inQuotes = false;
+      for (let j = 0; j < lines[i].length; j++) {
+        const ch = lines[i][j];
+        if (ch === '"') { inQuotes = !inQuotes; }
+        else if (ch === ',' && !inQuotes) { cells.push(cur); cur = ''; }
+        else { cur += ch; }
+      }
+      cells.push(cur);
+      rows.push({
+        item: (cells[0] || '').trim(),
+        quantity: (cells[1] || '').trim(),
+        notes: (cells[2] || '').trim(),
+      });
+    }
+    return rows;
+  }
+
+  const rowsEl = document.getElementById('rows');
+  const statusEl = document.getElementById('status');
+
+  fetch('inventory.csv?_=' + Date.now())
+    .then(r => r.text())
+    .then(text => {
+      const items = parseCSV(text);
+      rowsEl.innerHTML = '';
+      for (const p of items) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${p.item}</td><td>${p.quantity}</td><td>${p.notes}</td>`;
+        rowsEl.appendChild(tr);
+      }
+      statusEl.textContent = items.length + ' items';
+    })
+    .catch(() => {
+      statusEl.textContent = 'Could not load inventory.csv';
+    });
+</script>
+
+</body>
+</html>
