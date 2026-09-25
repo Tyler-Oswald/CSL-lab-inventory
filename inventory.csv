@@ -1,4 +1,4 @@
-Item,Quanity,Notes
+Item ,Quanity,Notes
 1/10th scale Traxxas RC cars,2,
 1/8th scale RC car brushed,1,
 1/8th scale RC car brushless,3,
@@ -18,7 +18,9 @@ Jetson AGX Orin,2,1 out of 2 currently not functional
 Jetson Xavier nx,1,
 Moza sim pedals,1,
 Moza sim wheel,1,
+Pololu DRV8835,20,
 Pursa mini 3D printer,1,
+RPI Zero 2 W ,26,
 RPLIDAR,2,
 RTX 3050,1,
 Spark Fun inventors kit,1,
